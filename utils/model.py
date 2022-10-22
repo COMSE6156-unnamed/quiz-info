@@ -1,4 +1,4 @@
-from exts import db
+from utils.exts import db
 
 
 class Quiz(db.Model):
