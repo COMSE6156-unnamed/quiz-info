@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_migrate import Migrate
 import config
 from utils.exts import db
@@ -19,7 +19,7 @@ app.register_blueprint(user_bp)  # User related API
 
 @app.route("/")
 def index():
-    return "<h2>Quiz Info Part Homepage<h2>"
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

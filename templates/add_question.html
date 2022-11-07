@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Question</title>
+</head>
+<body>
+<h3>Method 1: Add N random questions</h3>
+<form action="{{ url_for("quiz.add_question_to_db") }}" method="post">
+    <label>Input N: <input type="text" name="q-nums"></label>
+    <input type="submit">
+</form>
+
+<h3>Method 2: Add One question</h3>
+<form action="index.html" method="post">
+    <input type="submit">
+</form><br/>
+
+<a href="{{ url_for("index") }}">back</a>
+</body>
+</html>
