@@ -20,4 +20,4 @@ def add_quiz(num: int) -> None:
         for idx_tuple in idx_tuple_list:
             quiz_question = QuizQuestion(None, quiz.quiz_id, idx_tuple[0])
             db.session.add(quiz_question)
-            db.session.commit()
+    db.session.commit()

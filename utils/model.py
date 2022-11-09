@@ -14,23 +14,20 @@ class Quiz(db.Model):
 class Question(db.Model):
     __tablename__ = "question"
     question_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    description = db.Column(db.String(256))
-    img_url = db.Column(db.String(256))
-    right_answer_id = db.Column(db.Integer)
-    other_choice_id1 = db.Column(db.Integer)
-    other_choice_id2 = db.Column(db.Integer)
-    other_choice_id3 = db.Column(db.Integer)
+    q_type = db.Column(db.Integer)
+    c_type = db.Column(db.Integer)
+    description = db.Column(db.String(1024))
+    content = db.Column(db.String(1024))
+    answer = db.Column(db.String(256))
     difficulty = db.Column(db.Integer)
 
-    def __init__(self, question_id, description, img_url, right_answer_id, other_choice_id1,
-                 other_choice_id2, other_choice_id3, difficulty):
+    def __init__(self, question_id, q_type, c_type, description, content, answer, difficulty):
         self.question_id = question_id
+        self.q_type = q_type
+        self.c_type = c_type
         self.description = description
-        self.img_url = img_url
-        self.right_answer_id = right_answer_id
-        self.other_choice_id1 = other_choice_id1
-        self.other_choice_id2 = other_choice_id2
-        self.other_choice_id3 = other_choice_id3
+        self.content = content
+        self.answer = answer
         self.difficulty = difficulty
 
 
@@ -52,10 +49,10 @@ class UserAnswer(db.Model):
     user_id = db.Column(db.Integer)
     quiz_id = db.Column(db.Integer)  # Different quiz have same question
     question_id = db.Column(db.Integer)
-    choice_id = db.Column(db.Integer)
+    user_answer = db.Column(db.String(256))
 
-    def __init__(self, user_id, quiz_id, question_id, choice_id):
+    def __init__(self, user_id, quiz_id, question_id, user_answer):
         self.user_id = user_id
         self.quiz_id = quiz_id
         self.question_id = question_id
-        self.choice_id = choice_id
+        self.user_answer = user_answer

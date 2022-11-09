@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Take Quiz MainPage</title>
+</head>
+<body>
+<p>User ID: {{ content['user_id'] }}</p>
+<p>Quiz ID: {{ content['quiz_id'] }}</p>
+<div>
+<form action="{{ url_for("user.user_take_quiz", user_id=content['user_id'], quiz_id=content['quiz_id']) }}" method="post">
+    <ol>
+    {% for question in content['questions'] %}
+        <li>{{ question['description'] }}
+            <ol type="A">
+            {% if not question['c_type']%}
+                {% for choice in question['content'].split("\n") %}
+                    <li><label>
+                        <input type="radio" name="{{ question['question_id'] }}" value="{{ choice }}">
+                    </label>{{ choice }}</li>
+                {% endfor %}
+            {% else %}
+                {% for choice in question['content'].split("\n") %}
+                    <li><label>
+                        <input type="checkbox" name="{{ question['question_id'] }}" value="{{ choice }}">
+                    </label>{{ choice }}</li>
+                {% endfor %}
+            {% endif %}
+            </ol>
+        </li>
+    {% endfor %}
+    </ol>
+    <input type="submit" value="Submit!">
+</form>
+</div>
+</body>
+</html>

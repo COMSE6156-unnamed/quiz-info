@@ -6,15 +6,31 @@
 </head>
 <body>
 <h3>Method 1: Add N random questions</h3>
-<form action="{{ url_for("quiz.add_question_to_db") }}" method="post">
+<form id="random-q-form" action="{{ url_for("quiz.add_question_to_db") }}" method="post">
+    <label> Choose the Question type:
+    <select name="q-type">
+        <option value="-1">Random.</option>
+        <option value="0">Choose dog name from an image.</option>
+        <option value="1">Choose dog size from an image.</option>
+        <option value="2">Choose dog origin from an image.</option>
+        <option value="3">Choose dog category from an image.</option>
+        <option value="4">Choose dog image from a name.</option>
+        <option value="5">Choose dog size from a name.</option>
+        <option value="6">Choose dog origin from a name.</option>
+        <option value="7">Choose dog category from a name.</option>
+    </select>
+    </label><br/>
+
     <label>Input N: <input type="text" name="q-nums"></label>
     <input type="submit">
 </form>
+
 
 <h3>Method 2: Add One question</h3>
 <form action="index.html" method="post">
     <input type="submit">
 </form><br/>
+
 
 <a href="{{ url_for("index") }}">back</a>
 </body>

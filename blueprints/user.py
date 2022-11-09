@@ -30,13 +30,15 @@ def user_take_quiz(user_id: int, quiz_id: int):
           choice_id: 2
         }
         """
-        request_body = json.loads(request.json)
-        question_id = int(request_body["question_id"])
-        choice_id = int(request_body["choice_id"])
-        user_answer = UserAnswer(user_id, quiz_id, question_id, choice_id)
-        db.session.add(user_answer)
+        for question_id in request.form.keys():
+            answer_list = []
+            for val in request.form.getlist(question_id):
+                answer_list.append(val)
+            answer = '\n'.join(answer_list)
+            user_answer = UserAnswer(user_id, quiz_id, int(question_id), answer)
+            db.session.add(user_answer)
         db.session.commit()
-        return "success"
+        return "<h2>Thank you for taking the quiz!!!</h2> <a href='/'>back<a>"
 
     elif request.method == "GET":
         """
@@ -55,14 +57,10 @@ def user_take_quiz(user_id: int, quiz_id: int):
                 .join(Question, UserAnswer.question_id == Question.question_id) \
                 .filter(UserAnswer.user_id == user_id, UserAnswer.quiz_id == quiz_id):
             content[question.question_id] = {
-                "choices": [
-                    {"id": question.right_answer_id, "name": ""},
-                    {"id": question.other_choice_id1, "name": ""},
-                    {"id": question.other_choice_id2, "name": ""},
-                    {"id": question.other_choice_id3, "name": ""}
-                ],
-                "right_answer": question.right_answer_id,
-                "chosen_answer": user_answer.choice_id
+                "description": question.description,
+                "content": question.content,
+                "right_answer": question.answer,
+                "user_answer": user_answer.user_answer
             }
         if content:
             content["score"] = 0

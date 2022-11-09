@@ -1,41 +1,63 @@
-from flask import Blueprint, request, Response, render_template
+import requests
+from flask import Blueprint, request, Response, render_template, url_for
 from utils.exts import db
-from utils.model import Question, QuizQuestion
-from utils.add_question import add_image_question
+from utils.model import Question, QuizQuestion, Quiz
+from utils.add_question import add_question
 from utils.add_quiz import add_quiz
 import json
 
 bp = Blueprint("quiz", __name__, url_prefix="/quiz")
 
 
+@bp.route("/", methods=["GET"])
+def all_quiz():
+    if request.method == "GET":
+        content = []
+        for quiz in db.session.query(Quiz).all():
+            section = {"quiz_id": quiz.quiz_id, "quiz_content": []}
+
+            for question in db.session.query(Question).join(QuizQuestion,
+                                                            QuizQuestion.question_id == Question.question_id) \
+                    .filter_by(quiz_id=quiz.quiz_id):
+                entry = {"question_id": question.question_id,
+                         "q_type": question.q_type,
+                         "c_type": question.c_type,
+                         "description": question.description,
+                         "content": question.content,
+                         "answer": question.answer,
+                         "difficulty": question.difficulty}
+                section["quiz_content"].append(entry)
+            content.append(section)
+        return Response(json.dumps(content), status=200, content_type="all_quiz.json")
+
+
 @bp.route("/<int:quiz_id>", methods=["GET"])
-def quiz(quiz_id: int):
+def get_quiz(quiz_id: int):
     if request.method == "GET":
         """
         input: quiz_id,
-        output: {
-          question_id: {
-            description: "",
-            image: "",
-            choices: [
-              {name: "doodle", choice_id: 123},
-            ]
-          },
-        }
+        output: [
+            {question_id: "", 
+             question_type: "",
+             choice_type: "",
+             description: "",
+             content: "",
+             answer: "",
+             difficulty: ""
+             }, ...
+        ]
         """
-        content = {}
+        content = []
         for question in db.session.query(Question).join(QuizQuestion, QuizQuestion.question_id == Question.question_id) \
                 .filter_by(quiz_id=quiz_id):
-            content[question.question_id] = {
-                "description": question.description,
-                "image": question.img_url,
-                "choices": [
-                    {"name": "", "choice_id": question.right_answer_id},
-                    {"name": "", "choice_id": question.other_choice_id1},
-                    {"name": "", "choice_id": question.other_choice_id2},
-                    {"name": "", "choice_id": question.other_choice_id3}
-                ]
-            }
+            entry = {"question_id": question.question_id,
+                     "q_type": question.q_type,
+                     "c_type": question.c_type,
+                     "description": question.description,
+                     "content": question.content,
+                     "answer": question.answer,
+                     "difficulty": question.difficulty}
+            content.append(entry)
         return Response(json.dumps(content), status=200, content_type="quiz.json")
 
 
@@ -46,7 +68,11 @@ def add_question_to_db():
         return render_template("add_question.html")
     elif request.method == "POST":
         # add q-nums question to db
-        add_image_question(int(request.form['q-nums']))
+        q_type = int(request.form['q-type'])
+        q_num = int(request.form['q-nums'])
+        ret = add_question(q_type, q_num)
+        if ret != 0:
+            return "<h2>Failed!</h2> <a href='/quiz/add-question'>back<a>"
         return "<h2>success</h2> <a href='/quiz/add-question'>back<a>"
 
 
@@ -59,3 +85,21 @@ def add_quiz_to_db():
         # add q-nums question to db
         add_quiz(int(request.form['q-nums']))
         return "<h2>success</h2> <a href='/quiz/add-quiz'>back<a>"
+
+
+@bp.route("/take-quiz", methods=["GET", "POST"])
+def take_quiz_home():
+    if request.method == "GET":
+        # direct to the add-question page
+        return render_template("take_quiz_home.html")
+    elif request.method == "POST":
+        user_id = request.form['user-id']
+        quiz_id = request.form['quiz-id']
+        questions = requests.get(url_for("quiz.get_quiz", quiz_id=quiz_id, _external=True)).json()
+        content = {
+            "user_id": user_id,
+            "quiz_id": quiz_id,
+            "questions": questions
+        }
+        return render_template("take_quiz_main.html", content=content)
+
