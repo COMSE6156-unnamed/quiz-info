@@ -3,10 +3,12 @@ from flask_migrate import Migrate
 import config
 from utils.exts import db
 from blueprints import quiz_bp, user_bp
+from flask_cors import CORS
 
 # app config
 app = Flask(__name__)
 app.config.from_object(config)
+CORS(app)
 
 # DB config
 db.init_app(app)  # Init DB
@@ -23,4 +25,4 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000)
