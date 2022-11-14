@@ -1,6 +1,7 @@
 import random
 from utils.exts import db
 from utils.model import Question
+from utils.url_utils import get_dog_image_url
 import utils.cons as cons
 import requests
 
@@ -57,26 +58,20 @@ def get_dog_info_range(q_type: int) -> list:
 def create_description(q_type: int, c_type: int, dog: dict) -> str:
     """
     create the description corresponds to q_type and c_type
+    if the the question is in cons.IMG_QUESTIONS, do not add anything to the description
     :param q_type: question type
     :param c_type: choice type
     :param dog: dog instance
     :return: string of description
     """
     description = cons.DESCRIPTION_MAP[q_type][c_type]
-    if q_type in cons.IMG_QUESTIONS:
-        img_url = dog['image_url']
-        if not img_url.startswith('http'):
-            return cons.ERROR_MSG
-        else:
-            description = description.format(img_url)
-    elif q_type in cons.NAME_QUESTIONS:
+    if q_type in cons.NAME_QUESTIONS:
         name = dog['name']
         if name:
             description = description.format(name)
         else:
             return cons.ERROR_MSG
-    else:
-        pass
+    
     return description
 
 
@@ -97,6 +92,7 @@ def create_answer_list(q_type: int, dog: dict) -> list:
     elif q_type == cons.IMG_TO_CATEGORY_TYPE or q_type == cons.NAME_TO_CATEGORY_TYPE:
         answer_list = [category['name'] for category in dog['categories']]
     elif q_type == cons.NAME_TO_IMG_TYPE:
+        # TODO: change the url to an API path
         url = dog['image_url']
         if url and url.startswith("http"):
             answer_list = [url]
@@ -201,8 +197,11 @@ def add_question(q_type_input: int, q_num: int) -> int:
         # create content
         content = create_content(dog_info_all, answer_list, choice_num)
 
+        # create image_url
+        image_url = None if q_type not in cons.IMG_QUESTIONS else get_dog_image_url(dog_id)
+
         # create question instance
-        question = Question(None, q_type, c_type, description, content, answer, -1)
+        question = Question(None, q_type, c_type, description, content, answer, -1, image_url)
 
         # add instance to db
         db.session.add(question)

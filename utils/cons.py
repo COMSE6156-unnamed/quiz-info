@@ -28,18 +28,18 @@ ALL_QUESTIONS = IMG_QUESTIONS + NAME_QUESTIONS
 # description corresponds to q_type
 DESCRIPTION_MAP = {
     IMG_TO_NAME_TYPE: {
-        SINGLE_CHOICE_TYPE: "Choose the name matches the dog shown in the below image.\n{}"
+        SINGLE_CHOICE_TYPE: "Choose the name matches the dog shown in the below image.\n"
     },
     IMG_TO_SIZE_TYPE: {
-        SINGLE_CHOICE_TYPE: "Choose the size matches the dog shown in the below image.\n{}"
+        SINGLE_CHOICE_TYPE: "Choose the size matches the dog shown in the below image.\n"
     },
     IMG_TO_ORIGIN_TYPE: {
-        SINGLE_CHOICE_TYPE: "Choose the origin matches the dog shown in the below image.\n{}",
-        MULTIPLE_CHOICE_TYPE: "Choose ONE OR MORE origins match the dog shown in the below image.\n{}"
+        SINGLE_CHOICE_TYPE: "Choose the origin matches the dog shown in the below image.\n",
+        MULTIPLE_CHOICE_TYPE: "Choose ONE OR MORE origins match the dog shown in the below image.\n"
     },
     IMG_TO_CATEGORY_TYPE: {
-        SINGLE_CHOICE_TYPE: "Choose the category matches the dog shown in the below image.\n{}",
-        MULTIPLE_CHOICE_TYPE: "Choose ONE OR MORE categories match the dog shown in the below image.\n{}"
+        SINGLE_CHOICE_TYPE: "Choose the category matches the dog shown in the below image.\n",
+        MULTIPLE_CHOICE_TYPE: "Choose ONE OR MORE categories match the dog shown in the below image.\n"
     },
     NAME_TO_IMG_TYPE: {
         SINGLE_CHOICE_TYPE: "Choose the image of {}.",

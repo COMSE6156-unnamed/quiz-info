@@ -4,6 +4,7 @@ from utils.exts import db
 from utils.model import Question, QuizQuestion, Quiz
 from utils.add_question import add_question
 from utils.add_quiz import add_quiz
+from utils.quiz_utils import format_question
 import json
 
 bp = Blueprint("quiz", __name__, url_prefix="/quiz")
@@ -19,16 +20,9 @@ def all_quiz():
             for question in db.session.query(Question).join(QuizQuestion,
                                                             QuizQuestion.question_id == Question.question_id) \
                     .filter_by(quiz_id=quiz.quiz_id):
-                entry = {"question_id": question.question_id,
-                         "q_type": question.q_type,
-                         "c_type": question.c_type,
-                         "description": question.description,
-                         "content": question.content,
-                         "answer": question.answer,
-                         "difficulty": question.difficulty}
-                section["quiz_content"].append(entry)
+                section["quiz_content"].append(format_question(question))
             content.append(section)
-        return Response(json.dumps(content), status=200, content_type="all_quiz.json")
+        return Response(json.dumps(content), status=200, content_type="application/json")
 
 
 @bp.route("/<int:quiz_id>", methods=["GET"])
@@ -50,15 +44,8 @@ def get_quiz(quiz_id: int):
         content = []
         for question in db.session.query(Question).join(QuizQuestion, QuizQuestion.question_id == Question.question_id) \
                 .filter_by(quiz_id=quiz_id):
-            entry = {"question_id": question.question_id,
-                     "q_type": question.q_type,
-                     "c_type": question.c_type,
-                     "description": question.description,
-                     "content": question.content,
-                     "answer": question.answer,
-                     "difficulty": question.difficulty}
-            content.append(entry)
-        return Response(json.dumps(content), status=200, content_type="quiz.json")
+            content.append(format_question(question))
+        return Response(json.dumps(content), status=200, content_type="application/json")
 
 
 @bp.route("/add-question", methods=["GET", "POST"])

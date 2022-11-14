@@ -20,8 +20,9 @@ class Question(db.Model):
     content = db.Column(db.String(1024))
     answer = db.Column(db.String(256))
     difficulty = db.Column(db.Integer)
+    image_url = db.Column(db.String(1024))
 
-    def __init__(self, question_id, q_type, c_type, description, content, answer, difficulty):
+    def __init__(self, question_id, q_type, c_type, description, content, answer, difficulty, image_url):
         self.question_id = question_id
         self.q_type = q_type
         self.c_type = c_type
@@ -29,6 +30,7 @@ class Question(db.Model):
         self.content = content
         self.answer = answer
         self.difficulty = difficulty
+        self.image_url = image_url
 
 
 class QuizQuestion(db.Model):
