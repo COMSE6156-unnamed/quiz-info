@@ -1,5 +1,5 @@
 # Dog-info API related
-DOG_INFO_API_URL = "http://doggo-env-0.eba-zsw3tn3r.us-east-2.elasticbeanstalk.com"
+DOG_INFO_API_URL = "http://doginfo-env.eba-ui3pwzdu.us-east-1.elasticbeanstalk.com"
 DOG_ALL_URL = DOG_INFO_API_URL + "/dogs"
 DOG_ONE_URL = DOG_ALL_URL + "/{}"
 DOG_CATEGORIES_URL = DOG_ONE_URL + "/categories"
