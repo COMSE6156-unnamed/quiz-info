@@ -14,13 +14,13 @@
         <li>{{ question['description'] }}
             <ol type="A">
             {% if not question['c_type']%}
-                {% for choice in question['content'].split("\n") %}
+                {% for choice in question['choices'] %}
                     <li><label>
                         <input type="radio" name="{{ question['question_id'] }}" value="{{ choice }}">
                     </label>{{ choice }}</li>
                 {% endfor %}
             {% else %}
-                {% for choice in question['content'].split("\n") %}
+                {% for choice in question['choices'] %}
                     <li><label>
                         <input type="checkbox" name="{{ question['question_id'] }}" value="{{ choice }}">
                     </label>{{ choice }}</li>

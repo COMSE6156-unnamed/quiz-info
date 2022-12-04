@@ -88,5 +88,6 @@ def take_quiz_home():
             "quiz_id": quiz_id,
             "questions": questions
         }
+        print(questions)
         return render_template("take_quiz_main.html", content=content)
 
