@@ -1,6 +1,6 @@
 from flask import Blueprint, request, Response
 from utils.exts import db
-from utils.model import Question, UserAnswer, Quiz
+from utils.model import Question, UserAnswer, Quiz, QuizQuestion
 import json
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -24,21 +24,34 @@ def user_quiz_info(user_id: int):
 def user_take_quiz(user_id: int, quiz_id: int):
     if request.method == "POST":
         """
-        user_answer
         request_body = {
-          question_id: 1,
-          choice_id: 2
+          question_id: []
         }
+
+        response_body = {
+
+        }
+
         """
         for question_id in request.form.keys():
-            answer_list = []
-            for val in request.form.getlist(question_id):
-                answer_list.append(val)
+            answer_list = request.form.getlist(question_id)
             answer = '\n'.join(answer_list)
             user_answer = UserAnswer(user_id, quiz_id, int(question_id), answer)
             db.session.add(user_answer)
         db.session.commit()
-        return "<h2>Thank you for taking the quiz!!!</h2> <a href='/'>back<a>"
+
+        resp = {"right_answers": {}}
+        score = 0
+        for question in db.session.query(Question) \
+                    .join(QuizQuestion, QuizQuestion.question_id == Question.question_id) \
+                    .filter(QuizQuestion.quiz_id == quiz_id):
+          right_answer = question.answer.split('\n')
+          resp["right_answers"][question.question_id] = right_answer
+          if set(right_answer) == set(request.form.getlist(question_id)):
+            score += 1
+          
+        resp["score"] = score
+        return Response(json.dumps(resp), status=200)
 
     elif request.method == "GET":
         """
