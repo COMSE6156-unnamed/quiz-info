@@ -11,7 +11,7 @@ def get_dog_id_range() -> list:
     Get all dogs' id as a list.
     :return: List
     """
-    dog_list = requests.get(cons.DOG_ALL_URL).json()['data']
+    dog_list = requests.get(cons.DOG_ALL_URL).json()["data"]
     res = []
     for dog in dog_list:
         res.append(dog["id"])
@@ -24,7 +24,7 @@ def get_dog_info_range(q_type: int) -> list:
     :param q_type: type of the question
     :return: dog info list
     """
-    dog_list = requests.get(cons.DOG_ALL_URL).json()['data']
+    dog_list = requests.get(cons.DOG_ALL_URL).json()["data"]
     info_set = set()
 
     if q_type == cons.IMG_TO_NAME_TYPE:
