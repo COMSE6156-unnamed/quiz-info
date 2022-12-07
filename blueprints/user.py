@@ -1,6 +1,7 @@
 from flask import Blueprint, request, Response
 from utils.exts import db
-from utils.model import Question, UserAnswer, Quiz, QuizQuestion
+from utils.model import Question, UserAnswer, Quiz, QuizQuestion, UserQuiz
+from utils.quiz_utils import user_take_quiz_resp
 import json
 
 bp = Blueprint("user", __name__, url_prefix="/user")
@@ -38,19 +39,21 @@ def user_take_quiz(user_id: int, quiz_id: int):
             answer = '\n'.join(answer_list)
             user_answer = UserAnswer(user_id, quiz_id, int(question_id), answer)
             db.session.add(user_answer)
-        db.session.commit()
 
-        resp = {"right_answers": {}}
-        score = 0
+        question_num = correct_num = 0
         for question in db.session.query(Question) \
                     .join(QuizQuestion, QuizQuestion.question_id == Question.question_id) \
                     .filter(QuizQuestion.quiz_id == quiz_id):
           right_answer = question.answer.split('\n')
-          resp["right_answers"][question.question_id] = right_answer
           if set(right_answer) == set(request.form.getlist(question_id)):
-            score += 1
-        
-        resp["score"] = score / len(resp["right_answers"]) * 100
+            correct_num += 1
+          question_num += 1
+
+        score = correct_num / question_num * 100
+        db.session.add(UserQuiz(user_id, quiz_id, score))
+        db.session.commit()
+
+        resp = user_take_quiz_resp(user_id, quiz_id)
         return Response(json.dumps(resp), status=200)
 
     elif request.method == "GET":
@@ -65,16 +68,5 @@ def user_take_quiz(user_id: int, quiz_id: int):
         }
 
         """
-        content = {}
-        for user_answer, question in db.session.query(UserAnswer, Question) \
-                .join(Question, UserAnswer.question_id == Question.question_id) \
-                .filter(UserAnswer.user_id == user_id, UserAnswer.quiz_id == quiz_id):
-            content[question.question_id] = {
-                "description": question.description,
-                "content": question.content,
-                "right_answer": question.answer,
-                "user_answer": user_answer.user_answer
-            }
-        if content:
-            content["score"] = 0
-        return Response(json.dumps(content), status=200, content_type="user_take_quiz.json")
+        resp = user_take_quiz_resp(user_id, quiz_id)
+        return Response(json.dumps(resp), status=200, content_type="user_take_quiz.json")
