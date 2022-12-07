@@ -1,5 +1,5 @@
 # Dog-info API related
-DOG_INFO_API_URL = "https://y378va45sf.execute-api.us-east-1.amazonaws.com/dev"
+DOG_INFO_API_URL = "https://y378va45sf.execute-api.us-east-1.amazonaws.com/de"
 DOG_ALL_URL = DOG_INFO_API_URL + "/dogs"
 DOG_ONE_URL = DOG_ALL_URL + "/{}"
 DOG_CATEGORIES_URL = DOG_ONE_URL + "/categories"

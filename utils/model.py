@@ -1,5 +1,5 @@
 from utils.exts import db
-
+import datetime
 
 class Quiz(db.Model):
     __tablename__ = "quiz"
@@ -52,6 +52,7 @@ class UserAnswer(db.Model):
     quiz_id = db.Column(db.Integer)  # Different quiz have same question
     question_id = db.Column(db.Integer)
     user_answer = db.Column(db.String(256))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now) # the time when user took the quiz
 
     def __init__(self, user_id, quiz_id, question_id, user_answer):
         self.user_id = user_id
