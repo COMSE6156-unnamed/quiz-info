@@ -49,8 +49,8 @@ def user_take_quiz(user_id: int, quiz_id: int):
           resp["right_answers"][question.question_id] = right_answer
           if set(right_answer) == set(request.form.getlist(question_id)):
             score += 1
-          
-        resp["score"] = score
+        
+        resp["score"] = score / len(resp["right_answers"]) * 100
         return Response(json.dumps(resp), status=200)
 
     elif request.method == "GET":
