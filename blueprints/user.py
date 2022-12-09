@@ -26,7 +26,7 @@ def user_take_quiz(user_id: int, quiz_id: int):
     if request.method == "POST":
         """
         request_body = {
-          question_id: []
+          question_id: ["Small"]
         }
 
         response_body = {
@@ -34,8 +34,8 @@ def user_take_quiz(user_id: int, quiz_id: int):
         }
 
         """
-        for question_id in request.form.keys():
-            answer_list = request.form.getlist(question_id)
+        data = json.loads(request.data)
+        for question_id, answer_list in data.items():
             answer = '\n'.join(answer_list)
             user_answer = UserAnswer(user_id, quiz_id, int(question_id), answer)
             db.session.add(user_answer)
