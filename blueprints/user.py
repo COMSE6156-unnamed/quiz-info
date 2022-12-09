@@ -45,7 +45,7 @@ def user_take_quiz(user_id: int, quiz_id: int):
                     .join(QuizQuestion, QuizQuestion.question_id == Question.question_id) \
                     .filter(QuizQuestion.quiz_id == quiz_id):
           right_answer = question.answer.split('\n')
-          if set(right_answer) == set(request.form.getlist(str(question.question_id))):
+          if set(right_answer) == set(data.get(str(question.question_id), [])):
             correct_num += 1
           question_num += 1
 
