@@ -1,0 +1,212 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: AWS EC2 instance
+    url: http://34.227.115.21:5011
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: Quiz Info API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+paths:
+  /quiz:
+    get:
+      summary: get all quizzes
+    
+      responses:
+        '200': 
+          description: fetch quizzes info
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizItem'
+        
+  /quiz/{quiz_id}:
+    get:
+      summary: get the quiz information by id
+      parameters:
+        - in: path
+          name: quiz_id
+          required: true
+          description: pass a parameter for looking up a quiz
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuizContent'
+        '400':
+          description: bad input parameter
+  
+  /user/{user_id}/quiz:
+    get:
+      summary: get a list of quiz ids taken by a user
+      parameters: 
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                example: [1, 2, 3, 4, 5]
+          
+  /user/{user_id}/quiz/{quiz_id}:
+    get:
+      summary: get a user's answer in a given quiz
+      parameters:
+        - in: path
+          name: quiz_id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAnswers'
+  
+    post:
+      summary: create a user's answer in a given quiz
+      parameters:
+        - in: path
+          name: quiz_id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAnswerRequestBody'
+      
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAnswers'
+                  
+components:
+  schemas:
+    QuizItem:
+      type: object
+      required: 
+        - quiz_id
+        - quiz_content
+      properties:
+        quiz_id: 
+          type: integer
+          example: 1
+        quiz_content:
+          type: array
+          items: 
+            $ref: '#/components/schemas/QuizContent'
+    QuizContent:
+      type: object
+      required:
+        - question_id
+        - description
+        - choices
+        - answers
+        - difficulty
+        - image_url
+      properties:
+        question_id:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: "Choose the category matches the dog shown in the below image.\n"
+        choices:
+          type: array
+          items:
+            type: string
+          example: ["Working", "Hound", "Non-Sporting", "Herding"]
+        answers:
+          type: array
+          items:
+            type: string
+          example: ["Herding"]
+        difficulty:
+          type: integer
+          example: -1
+        image_url:
+          type: string
+          example: "https://y378va45sf.execute-api.us-east-1.amazonaws.com/dev/dogs/2/image_url"
+  
+    UserAnswers:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/UserAnswer"
+      example:
+        {"52": {"description": "Choose the category matches the dog shown in the below image.\n", "choices": ["Working", "Hound", "Non-Sporting", "Herding"], "right_answer": ["Herding"], "user_answer": ["Herding"]}}
+        
+    UserAnswer:
+      type: object
+      required:
+        - description
+        - choices
+        - right_answer
+        - user_answer
+      properties:
+        description:
+          type: string
+          example: 'Choose the category matches the dog shown in the below image.\n'
+        choices:
+          type: array
+          items:
+            type: string
+          example: ["Working", "Hound", "Non-Sporting", "Herding"]
+        right_answer:
+          type: array
+          items: 
+            type: string
+          example: ["Herding"]
+        
+        user_answer:
+          type: array
+          items: 
+            type: string
+          example: ["Hound"]
+      
+    UserAnswerRequestBody:
+      type: object
+      example: {"52": ["Herding"],"56": ["Small"],"47": ["Germany"],"73": ["Toy"],"39": ["Hound"],"32": ["Giant"],"35": ["https://coms6156-dog-data.s3.amazonaws.com/images/chow_chow.jpg"],"28": ["Terrier"],"25": ["Pembroke Welsh Corgi"]
+      }
+              
+        
