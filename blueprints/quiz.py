@@ -25,8 +25,8 @@ def all_quiz():
         return Response(json.dumps(content), status=200, content_type="application/json")
 
 
-@bp.route("/<int:quiz_id>", methods=["GET"])
-def get_quiz(quiz_id: int):
+@bp.route("/<quiz_id>", methods=["GET"])
+def get_quiz(quiz_id: str):
     if request.method == "GET":
         """
         input: quiz_id,

@@ -7,8 +7,8 @@ import json
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
-@bp.route("/<int:user_id>/quiz", methods=["GET"])
-def user_quiz_info(user_id: int):
+@bp.route("/<user_id>/quiz", methods=["GET"])
+def user_quiz_info(user_id: str):
     if request.method == "GET":
         """
         [quiz_id]
@@ -21,8 +21,8 @@ def user_quiz_info(user_id: int):
         return Response(json.dumps(content), status=200, content_type="user_quiz_info.json")
 
 
-@bp.route("/<int:user_id>/quiz/<int:quiz_id>", methods=["POST", "GET"])
-def user_take_quiz(user_id: int, quiz_id: int):
+@bp.route("/<user_id>/quiz/<quiz_id>", methods=["POST", "GET"])
+def user_take_quiz(user_id: str, quiz_id: str):
     if request.method == "POST":
         """
         request_body = {

@@ -14,7 +14,7 @@ def format_question(question_entry) -> dict:
     entry["image_url"] = question_entry.image_url
   return entry
 
-def user_take_quiz_resp(user_id: int, quiz_id: int) -> dict:
+def user_take_quiz_resp(user_id: str, quiz_id: str) -> dict:
     content = {}
     for user_answer, question in db.session.query(UserAnswer, Question) \
           .join(Question, UserAnswer.question_id == Question.question_id) \
