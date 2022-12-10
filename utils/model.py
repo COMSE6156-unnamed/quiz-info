@@ -47,23 +47,22 @@ class QuizQuestion(db.Model):
 class UserQuiz(db.Model):
   __tablename__ = "user_quiz"
   id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-  user_id = db.Column(db.Integer)
+  user_id = db.Column(db.String(256))
   quiz_id = db.Column(db.Integer)
   score = db.Column(db.Float)
   created_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
-  def __init__(self, user_id: int, quiz_id: int, score: float):
+  def __init__(self, user_id: str, quiz_id: int, score: float):
     self.user_id = user_id
     self.quiz_id = quiz_id
     self.score = score
 
 
-
 class UserAnswer(db.Model):
     __tablename__ = "user_answer"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer)
-    quiz_id = db.Column(db.Integer)  # Different quiz have same question
+    user_id = db.Column(db.String(256))
+    quiz_id = db.Column(db.String(256))  # Different quiz have same question
     question_id = db.Column(db.Integer)
     user_answer = db.Column(db.String(256))
 
